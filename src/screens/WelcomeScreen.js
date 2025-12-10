@@ -7,7 +7,7 @@ import Colors from '../constants/Colors';
 const WelcomeScreen = ({ navigation }) => {
   return (
     <ImageBackground 
-      source={require('../../assets/african-pattern-bg.jpg')} // Add your own background image
+      source={require('../../assets/images/african-pattern-bg.jpg')} // Add your own background image
       style={styles.background}
       blurRadius={2}
     >

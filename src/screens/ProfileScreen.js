@@ -5,14 +5,15 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Image,
   Switch,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons'; // Changed import for Expo
 import Colors from '../constants/Colors';
 import Logo from '../components/Logo';
+import { globalStyles } from '../styles/globalStyles';
 import { AuthContext } from '../context/AuthContext';
 
 const ProfileScreen = ({ navigation }) => {
@@ -42,8 +43,28 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <View style={styles.container}>
+      {/* Fixed Header with Back Button */}
+      <SafeAreaView style={styles.safeHeader}>
+        <View style={styles.topHeader}>
+          <TouchableOpacity 
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back" size={24} color={Colors.white} />
+          </TouchableOpacity>
+          <Text style={styles.screenTitle}>My Profile</Text>
+          <View style={styles.rightPlaceholder} />
+        </View>
+      </SafeAreaView>
+
+      {/* Scrollable Content */}
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        bounces={true}
+      >
         {/* Header */}
         <View style={styles.header}>
           <Logo size={80} showText={false} />
@@ -62,7 +83,7 @@ const ProfileScreen = ({ navigation }) => {
             style={styles.editButton}
             onPress={() => navigation.navigate('EditProfile')}
           >
-            <Icon name="create-outline" size={20} color={Colors.primary} />
+            <Ionicons name="create-outline" size={20} color={Colors.primary} />
           </TouchableOpacity>
         </View>
 
@@ -96,7 +117,7 @@ const ProfileScreen = ({ navigation }) => {
           
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
-              <Icon name="notifications-outline" size={22} color={Colors.textPrimary} />
+              <Ionicons name="notifications-outline" size={22} color={Colors.textPrimary} />
               <Text style={styles.settingLabel}>Push Notifications</Text>
             </View>
             <Switch
@@ -109,7 +130,7 @@ const ProfileScreen = ({ navigation }) => {
 
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
-              <Icon name="moon-outline" size={22} color={Colors.textPrimary} />
+              <Ionicons name="moon-outline" size={22} color={Colors.textPrimary} />
               <Text style={styles.settingLabel}>Dark Mode</Text>
             </View>
             <Switch
@@ -131,32 +152,79 @@ const ProfileScreen = ({ navigation }) => {
               onPress={() => navigation.navigate(item.screen)}
             >
               <View style={styles.menuLeft}>
-                <Icon name={item.icon} size={22} color={Colors.textPrimary} />
+                <Ionicons name={item.icon} size={22} color={Colors.textPrimary} />
                 <Text style={styles.menuLabel}>{item.label}</Text>
               </View>
-              <Icon name="chevron-forward-outline" size={20} color={Colors.gray} />
+              <Ionicons name="chevron-forward-outline" size={20} color={Colors.gray} />
             </TouchableOpacity>
           ))}
         </View>
 
         {/* Logout Button */}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Icon name="log-out-outline" size={22} color={Colors.danger} />
+          <Ionicons name="log-out-outline" size={22} color={Colors.danger} />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
 
+        {/* Extra Content to Ensure Scroll Works */}
+        <View style={styles.spacer} />
+        
         {/* App Version */}
         <Text style={styles.versionText}>DurbanWork v1.0.0</Text>
+        
+        {/* Extra Padding for Safe Area */}
+        <View style={styles.bottomSpacer} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  // Main container
   container: {
-    flex: 1,
-    backgroundColor: Colors.light,
+  flex: 1, 
+  backgroundColor: Colors.white,
+  
+  ...(Platform.OS === 'web' && { 
+    height: '100vh',
+    overflowY: 'scroll', 
+  }),
+},
+  // Safe area for header
+  safeHeader: {
+    backgroundColor: Colors.primary,
   },
+  // Fixed header with back button
+  topHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    height: 60,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.white + '20',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  screenTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.white,
+  },
+  rightPlaceholder: {
+    width: 40,
+  },
+  // ScrollView styles
+  scrollContent: {
+    paddingBottom: 500,
+  },
+  // Content styles
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -164,8 +232,22 @@ const styles = StyleSheet.create({
     padding: 20,
     marginHorizontal: 20,
     marginTop: 20,
+    marginBottom: 15,
     borderRadius: 15,
-    ...globalStyles.shadow,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+      web: {
+        boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+      }
+    }),
   },
   userInfo: {
     flex: 1,
@@ -204,10 +286,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: Colors.white,
     marginHorizontal: 20,
-    marginTop: 15,
+    marginBottom: 15,
     borderRadius: 15,
     paddingVertical: 20,
-    ...globalStyles.shadow,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+      web: {
+        boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+      }
+    }),
   },
   statItem: {
     flex: 1,
@@ -232,15 +327,28 @@ const styles = StyleSheet.create({
   section: {
     backgroundColor: Colors.white,
     marginHorizontal: 20,
-    marginTop: 15,
+    marginBottom: 15,
     borderRadius: 15,
     padding: 20,
-    ...globalStyles.shadow,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+      web: {
+        boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+      }
+    }),
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.textPrimary,
+    color: Colors.secondary,
     marginBottom: 15,
   },
   settingItem: {
@@ -281,11 +389,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: Colors.white,
     marginHorizontal: 20,
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 20,
     paddingVertical: 15,
     borderRadius: 15,
-    ...globalStyles.shadow,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+      web: {
+        boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+      }
+    }),
   },
   logoutText: {
     fontSize: 16,
@@ -293,23 +414,18 @@ const styles = StyleSheet.create({
     color: Colors.danger,
     marginLeft: 10,
   },
+  spacer: {
+    height: 50, // Extra space to ensure scroll
+  },
+  bottomSpacer: {
+    height: 30, // Extra space for safe area at bottom
+  },
   versionText: {
     textAlign: 'center',
     fontSize: 12,
     color: Colors.textSecondary,
-    marginVertical: 20,
+    marginVertical: 10,
   },
 });
-
-// Add these global styles if not already in your project
-const globalStyles = {
-  shadow: {
-    shadowColor: Colors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-};
 
 export default ProfileScreen;

@@ -1,9 +1,31 @@
 import { StyleSheet, Platform } from 'react-native';
 import Colors from '../constants/Colors';
 
+// Platform-specific shadow helper
+const getShadowStyles = () => {
+  if (Platform.OS === 'web') {
+    return {
+      boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+    };
+  } else if (Platform.OS === 'ios') {
+    return {
+      shadowColor: Colors.black,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+    };
+  } else {
+    return {
+      elevation: 3,
+    };
+  }
+};
+
+// Create shadow style
+const shadowStyle = getShadowStyles();
+
 export const globalStyles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Colors.white,
   },
   safeArea: {
@@ -29,17 +51,11 @@ export const globalStyles = StyleSheet.create({
   },
   card: {
     backgroundColor: Colors.white,
+    color: Colors.secondary,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    shadowColor: Colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    ...shadowStyle,
   },
   button: {
     backgroundColor: Colors.primary,
@@ -92,18 +108,8 @@ export const globalStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  // Platform specific
-  shadow: Platform.select({
-    ios: {
-      shadowColor: Colors.black,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
-    android: {
-      elevation: 3,
-    },
-  }),
+  // Platform-specific shadow utility (use with spread operator: ...globalStyles.shadow)
+  shadow: shadowStyle,
 });
 
 export const typography = {

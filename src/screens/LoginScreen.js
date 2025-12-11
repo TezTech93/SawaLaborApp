@@ -28,7 +28,7 @@ const LoginScreen = ({ navigation }) => {
     // API call will be implemented later
     console.log(values);
     // For now, navigate to main app
-    navigation.navigate('Main');
+    navigation.navigate('Welcome');
   };
 
   return (

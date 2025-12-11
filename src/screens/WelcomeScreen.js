@@ -14,7 +14,7 @@ const WelcomeScreen = ({ navigation }) => {
       <SafeAreaView style={styles.container}>
         <View style={styles.logoContainer}>
           <Logo size={150} />
-          <Text style={styles.title}>SabaLabor</Text>
+          <Text style={styles.title}>DurbanWork</Text>
           <Text style={styles.subtitle}>Connecting Labor with Opportunity</Text>
         </View>
 

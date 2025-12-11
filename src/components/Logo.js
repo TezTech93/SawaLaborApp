@@ -17,7 +17,7 @@ const Logo = ({ size = 100 }) => {
           fontSize="18"
           fontWeight="bold"
         >
-          SL
+          DW
         </Text>
         <Text
           x="50"
@@ -26,7 +26,7 @@ const Logo = ({ size = 100 }) => {
           fill={Colors.white}
           fontSize="10"
         >
-          SabaLabor
+          DurbanWork
         </Text>
       </Svg>
     </View>

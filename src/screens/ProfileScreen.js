@@ -221,6 +221,9 @@ const styles = StyleSheet.create({
     width: 40,
   },
   // ScrollView styles
+  scrollView: {
+    flex: 1, 
+  },
   scrollContent: {
     paddingBottom: 500,
   },
